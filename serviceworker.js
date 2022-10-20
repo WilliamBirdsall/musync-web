@@ -1,7 +1,8 @@
 const assets = [
     "/".
     "assets/css/styles.css",
-    "assets/js/app"
+    "assets/js/app",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap"
 ];
 
 self.addEventListener("install", event => {
