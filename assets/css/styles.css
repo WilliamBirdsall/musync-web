@@ -38,6 +38,7 @@ body {
 .split-container__top {
     background: var(--color-primary);
     color: var(--color-secondary);
+    transition: background .3s;
 }
 
 .split-containter__bottom {
@@ -45,7 +46,16 @@ body {
     color: var(--color-primary);
 }
 
-.input {
+.input, .output {
+    display: flex;
+    flex-direction: column;
+}
+
+.value {
+    font-size: 4rem;
+}
+
+.input .value {
     background: none;
     border: none;
     color: var(--color-secondary);
@@ -55,13 +65,10 @@ body {
     width: 5rem;
 }
 
-.output .value {
-    font-size: 4rem;
-}
-
 .calc-select {
     background: var(--color-primary);
     border-radius: .5rem;
+    cursor: default;
     margin-top: -10vh;
     padding: .75rem .3rem;
 }
