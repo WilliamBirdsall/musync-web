@@ -1,0 +1,17 @@
+{
+    "name": "Musync | Music Producer's Calculator",
+    "short_name" : "Musync",
+    "description": "Musync provides various music related calculations",
+    "start_url": "./",
+    "orientation": "any",
+    "theme_color": "#F87677",
+    "scope": "./",
+    "display": "standalone",
+    "icons": [
+        {
+            "src": "assets/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
