@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300&display=swap');
+
+:root {
+    --color-black: #1A1A1A;
+    --color-white: #ECECEC;
+    --color-red: #F87677;
+    --color-blue: #768AF0;
+    --color-green: #A1E297;
+
+    --color-primary: var(--color-red);
+    --color-secondary: var(--color-white);
+
+    --typeface-primary: 'Inter', sans-serif;
+}
+
+body {
+    font-family: var(--typeface-primary);
+    margin: 0;
+}
+
+.split-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.split-container__top, .split-containter__bottom {
+    height: 50vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.split-container__top {
+    background: var(--color-primary);
+    color: var(--color-secondary);
+}
+
+.split-containter__bottom {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.input {
+    background: none;
+    border: none;
+    color: var(--color-secondary);
+    font-size: 4rem;
+    padding: .5rem;
+    text-align: center;
+    width: 5rem;
+}
+
+.output .value {
+    font-size: 4rem;
+}
+
+.calc-select {
+    background: var(--color-primary);
+    border-radius: .5rem;
+    margin-top: -10vh;
+    padding: .75rem .3rem;
+}
+
+.calc-select span {
+    background: var(--color-primary);
+    border-radius: .3rem;
+    color: var(--color-secondary);
+    margin: 0 .2rem;
+    padding: .25rem .35rem;
+}
+
+.calc-select span.active {
+    background: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.unit-label {
+    display: block;
+    font-size: 2.25rem;
+}
