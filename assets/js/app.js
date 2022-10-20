@@ -16,6 +16,8 @@ const SETTINGS = (function appSettings() {
 const CALC = (function calculator() {
     let calcType = "";
 
+    const midiNotes = generateMidiNotes();
+
     const calculations = {
         "bs": (bars) => {
             const bpm = SETTINGS.settings.bpm;
@@ -40,7 +42,9 @@ const CALC = (function calculator() {
         "nh": (midiNote) => {
             const stdPitch = 440;
 
-            return stdPitch * Math.pow(((midiNote - 69) / 12), 2);
+            const midiNoteValue = midiNotes[midiNote];
+
+            return stdPitch * Math.pow(((midiNoteValue - 69) / 12), 2);
         }
     };
 
@@ -50,42 +54,6 @@ const CALC = (function calculator() {
 
     function calc(calcType, input) {
         return calculations[calcType](input);
-    }
-})();
-
-const UI = (function userInterface() {
-    const colors = {
-        "bs": "var(--color-red)",
-        "bh": "var(--color-blue)",
-        "nh": "var(--color-green)"
-    }
-
-    const midiNotes = generateMidiNotes();
-
-    return {
-        update
-    }
-
-    function update() {
-        const calcType = getCalcType();
-        const inputValue = getInputValue();
-
-        if(calcType != 'nh') {
-            // Update output
-            const result = CALC.calc(calcType, inputValue);
-
-            setOutputValue(result.value);
-            setOutputLabel(result.label);
-        } else {
-            // Generate Note Diagram
-            generateNoteDiagram();
-        }
-
-        updatePrimaryColor();
-    }
-
-    function generateNoteDiagram() {
-        console.log(midiNotes);
     }
 
     function generateMidiNotes() {
@@ -136,6 +104,45 @@ const UI = (function userInterface() {
         });
 
         return midiNotes;
+    }
+})();
+
+const UI = (function userInterface() {
+    const colors = {
+        "bs": "var(--color-red)",
+        "bh": "var(--color-blue)",
+        "nh": "var(--color-green)"
+    }
+
+    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+
+    return {
+        update
+    }
+
+    function update() {
+        const calcType = getCalcType();
+        const inputValue = getInputValue();
+
+        if(calcType != 'nh') {
+            // Update output
+            const result = CALC.calc(calcType, inputValue);
+
+            setOutputValue(result.value);
+            setOutputLabel(result.label);
+        } else {
+            // Generate Note Diagram
+            generateNoteDiagram();
+        }
+
+        updatePrimaryColor();
+    }
+
+    function generateNoteDiagram() {
+        console.log(notes.map((note) => {
+            const noteHz =CALC.calc('nh', note + getInputValue())
+            return ;
+        }));
     }
 
     function updatePrimaryColor() {
