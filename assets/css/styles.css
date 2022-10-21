@@ -90,3 +90,61 @@ body {
     display: block;
     font-size: 2.25rem;
 }
+
+.note-diagram {
+    display: flex;
+    flex-direction: column;
+    margin-top: -9vh;
+}
+
+.note-diagram .key {
+    align-items: center;
+    align-self: flex-start;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+    margin: -.6rem 0;
+    margin-left: 7.25rem;
+}
+
+.note-diagram .key:nth-of-type(7) {
+    margin-bottom: 1.5rem;
+}
+
+.note-diagram .key.sharp {
+    align-self: flex-end;
+    flex-direction: row;
+    margin-right: 7.25rem;
+    margin-left: 0;
+}
+
+.key .key__name-container {
+    border: solid .125rem var(--color-primary);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2rem;
+    margin-right: .5rem;
+    padding: .2rem;
+    width: 2rem;
+}
+
+.key.sharp .key__name-container {
+    background: var(--color-primary);
+    color: var(--color-secondary);
+    margin-left: .5rem;
+}
+
+.key .key__hz-label {
+    text-align: left;
+    width: 4rem;
+}
+
+.key.sharp .key__hz-label {
+    text-align: right;
+}
+
+.hidden {
+    display: none;
+}

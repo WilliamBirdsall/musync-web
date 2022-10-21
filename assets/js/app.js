@@ -44,7 +44,7 @@ const CALC = (function calculator() {
 
             const midiNoteValue = midiNotes[midiNote];
 
-            return stdPitch * Math.pow(((midiNoteValue - 69) / 12), 2);
+            return stdPitch * Math.pow(2, ((midiNoteValue - 69) / 12));
         }
     };
 
@@ -114,7 +114,7 @@ const UI = (function userInterface() {
         "nh": "var(--color-green)"
     }
 
-    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"].reverse();
 
     return {
         update
@@ -125,24 +125,59 @@ const UI = (function userInterface() {
         const inputValue = getInputValue();
 
         if(calcType != 'nh') {
-            // Update output
+            // Hide note-diagram
+            document.querySelector('.note-diagram').classList.add("hidden");
+
             const result = CALC.calc(calcType, inputValue);
 
             setOutputValue(result.value);
             setOutputLabel(result.label);
+
+            // Show output value and label
+            document.querySelector('.output .value').classList.remove("hidden");
+            document.querySelector('.output .label').classList.remove("hidden");
         } else {
-            // Generate Note Diagram
-            generateNoteDiagram();
+            // Hide output value and label
+            document.querySelector('.output .value').classList.add("hidden");
+            document.querySelector('.output .label').classList.add("hidden");
+
+            generateNoteDiagramHTML();
+
+            document.querySelector('.note-diagram').classList.remove("hidden");
         }
 
         updatePrimaryColor();
     }
 
-    function generateNoteDiagram() {
-        console.log(notes.map((note) => {
-            const noteHz =CALC.calc('nh', note + getInputValue())
-            return ;
-        }));
+    function generateNoteDiagramHTML() {
+        // Calculate notes
+        const noteObjs = notes.map((note) => {
+            const noteHz = CALC.calc('nh', note + getInputValue())
+            return {
+                name: note + getInputValue(),
+                hz: noteHz.toFixed(1)
+            }
+        });
+
+        // Render notes
+        const noteDiagramEl = document.querySelector('.note-diagram');
+
+        noteDiagramEl.innerHTML = noteObjs.map((note) => {
+            const isSharp = note.name.includes("#");
+            const classes = [
+                "key",
+                isSharp ? "sharp" : ""
+            ].join(" ").trim();
+
+           return `
+                <div class="${classes}">
+                    <span class="key__hz-label">${note.hz}</span>
+                    <div class="key__name-container">
+                        <span class="key__name-label">${note.name}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     function updatePrimaryColor() {
