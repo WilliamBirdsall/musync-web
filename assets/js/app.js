@@ -128,7 +128,8 @@ const UI = (function userInterface() {
             // Hide note-diagram
             document.querySelector('.note-diagram').classList.add("hidden");
 
-            document.querySelector('.input .label').textContent = "bars(s)";
+            const label = inputValue <= 1 ? 'bar' : 'bars';
+            document.querySelector('.input .label').textContent = label;
 
             const result = CALC.calc(calcType, inputValue);
 
