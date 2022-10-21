@@ -128,6 +128,8 @@ const UI = (function userInterface() {
             // Hide note-diagram
             document.querySelector('.note-diagram').classList.add("hidden");
 
+            document.querySelector('.input .label').textContent = "bars(s)";
+
             const result = CALC.calc(calcType, inputValue);
 
             setOutputValue(result.value);
@@ -137,6 +139,8 @@ const UI = (function userInterface() {
             document.querySelector('.output .value').classList.remove("hidden");
             document.querySelector('.output .label').classList.remove("hidden");
         } else {
+            document.querySelector('.input .label').textContent = "octave";
+
             // Hide output value and label
             document.querySelector('.output .value').classList.add("hidden");
             document.querySelector('.output .label').classList.add("hidden");

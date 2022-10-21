@@ -69,7 +69,7 @@ body {
     background: var(--color-primary);
     border-radius: .5rem;
     cursor: default;
-    margin-top: -10vh;
+    margin-top: -9vh;
     padding: .75rem .3rem;
 }
 
@@ -86,9 +86,10 @@ body {
     color: var(--color-primary);
 }
 
-.unit-label {
+.label {
     display: block;
     font-size: 2.25rem;
+    user-select: none;
 }
 
 .note-diagram {
@@ -103,18 +104,18 @@ body {
     display: flex;
     flex-direction: row-reverse;
     justify-content: center;
-    margin: -.6rem 0;
-    margin-left: 7.25rem;
+    margin: -.5rem 0;
+    margin-left: 6.75rem;
 }
 
 .note-diagram .key:nth-of-type(7) {
-    margin-bottom: 1.5rem;
+    margin-bottom: .7rem;
 }
 
 .note-diagram .key.sharp {
     align-self: flex-end;
     flex-direction: row;
-    margin-right: 7.25rem;
+    margin-right: 6.75rem;
     margin-left: 0;
 }
 
@@ -124,10 +125,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 2rem;
+    height: 1.5rem;
     margin-right: .5rem;
     padding: .2rem;
-    width: 2rem;
+    width: 1.5rem;
 }
 
 .key.sharp .key__name-container {
