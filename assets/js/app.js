@@ -5,11 +5,17 @@ if ('serviceWorker' in navigator) {
 
 const SETTINGS = (function appSettings() {
     let settings = {
-        "bpm": 120
+        "bpm": localStorage.getItem('bpm') ?? 120
     }
 
     return {
+        setBpm,
         settings
+    }
+
+    function setBpm(newBpm) {
+        settings.bpm = newBpm;
+        localStorage.setItem('bpm', newBpm);
     }
 })();
 
@@ -210,6 +216,7 @@ const UI = (function userInterface() {
 })();
 
 (function initEvents() {
+    // General Functionality Events
     const inputEl = document.querySelector('.input');
 
     inputEl.addEventListener('change', (e) => {
@@ -228,5 +235,13 @@ const UI = (function userInterface() {
 
             UI.update();
         });
+    });
+
+    // Settings Screen Events
+    const settingsIconEl = document.querySelector('.settings-icon');
+    const modalEl = document.querySelector('.settings-modal');
+
+    settingsIconEl.addEventListener('click', (e)=> {
+        modalEl.classList.remove('hidden');
     });
 })();
