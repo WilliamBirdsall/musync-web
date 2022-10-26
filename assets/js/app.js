@@ -5,17 +5,18 @@ if ('serviceWorker' in navigator) {
 
 const SETTINGS = (function appSettings() {
     let settings = {
-        "bpm": localStorage.getItem('bpm') ?? 120
+        "bpm": localStorage.getItem('bpm') ?? 120,
+        "dark-mode": localStorage.getItem('dark-mode') ?? "off"
     }
 
     return {
-        setBpm,
+        setSetting,
         settings
     }
 
-    function setBpm(newBpm) {
-        settings.bpm = newBpm;
-        localStorage.setItem('bpm', newBpm);
+    function setSetting(setting, newValue) {
+        settings[setting] = newValue;
+        localStorage.setItem(setting, newValue);
     }
 })();
 
@@ -215,7 +216,12 @@ const UI = (function userInterface() {
     }
 })();
 
-(function initEvents() {
+(function init() {
+    // General Init
+    UI.update();
+
+    document.querySelector('.bpm').value = SETTINGS.settings.bpm;
+
     // General Functionality Events
     const inputEl = document.querySelector('.input');
 
@@ -238,10 +244,29 @@ const UI = (function userInterface() {
     });
 
     // Settings Screen Events
-    const settingsIconEl = document.querySelector('.settings-icon');
-    const modalEl = document.querySelector('.settings-modal');
+    const menuIconEl = document.querySelector('.menu-icon');
+    const modalEl = document.querySelector('.menu-modal');
 
-    settingsIconEl.addEventListener('click', (e)=> {
-        modalEl.classList.remove('hidden');
+    menuIconEl.addEventListener('click', (e)=> {
+        if(menuIconEl.classList.contains('open')) {
+            menuIconEl.classList.remove('open');
+            modalEl.classList.add('hidden');
+        } else {
+            modalEl.classList.remove('hidden');
+            menuIconEl.classList.add('open');
+        }
+    });
+
+    // Settings Input Events
+    const settingInputEls = document.querySelectorAll('.menu-modal input');
+
+    settingInputEls.forEach((inputEl) => {
+        inputEl.addEventListener('change', (e) => {
+            const setting = e.target.getAttribute('name');
+            const newValue = e.target.value;
+
+            SETTINGS.setSetting(setting, newValue);
+            UI.update();
+        });
     });
 })();

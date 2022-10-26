@@ -18,12 +18,68 @@ body {
     margin: 0;
 }
 
-.settings-modal {
+.menu-icon {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 2.5rem;
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    width: 2.5rem;
+    z-index: 2;
+}
+
+.menu-icon .bar {
+    background: var(--color-secondary);
+    height: .2rem;
+    transform-origin: center;
+    transition: transform .2s ease-in-out, opacity .2s ease-in-out;
+    width: 2.2rem;
+}
+
+.menu-icon.open .bar {
+    background: var(--color-primary);
+}
+
+.menu-icon.open .bar:first-of-type {
+    transform: rotate(45deg);
+}
+
+.menu-icon.open .bar:last-of-type {
+    margin-top: -.3rem;
+    transform: rotate(-45deg);
+}
+
+.menu-icon .bar:nth-child(2) {
+    margin: .4rem 0;
+    opacity: 1;
+}
+
+.menu-icon.open .bar:nth-child(2) {
+    margin: 0;
+    opacity: 0;
+}
+
+.menu-modal {
     background: var(--color-secondary);
     height: 100vh;
     position: absolute;
     width: 100vw;
     z-index: 1;
+}
+
+.settings {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25%;
+    padding: 0 2rem;
+}
+
+.settings-container {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 1rem;
 }
 
 .split-container {
@@ -47,21 +103,6 @@ body {
     background: var(--color-primary);
     color: var(--color-secondary);
     transition: background .3s;
-}
-
-
-.split-container__top .settings-icon {
-    height: 2rem;
-    position: absolute;
-    top: 2rem;
-    right: 2rem;
-    width: 2rem;
-}
-
-.split-container__top .settings-icon svg path {
-    fill: var(--color-secondary);
-    height: 100%;
-    width: 100%;
 }
 
 .split-containter__bottom {
