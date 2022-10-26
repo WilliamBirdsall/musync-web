@@ -5,7 +5,7 @@
     --color-white: #ECECEC;
     --color-red: #F87677;
     --color-blue: #768AF0;
-    --color-green: #A1E297;
+    --color-green: #93DD88;
 
     --color-primary: var(--color-red);
     --color-secondary: var(--color-white);
@@ -24,15 +24,16 @@ body {
     justify-content: center;
     height: 2.5rem;
     position: absolute;
-    top: 2rem;
-    right: 2rem;
+    top: 1.5rem;
+    right: 1.5rem;
     width: 2.5rem;
     z-index: 2;
 }
 
 .menu-icon .bar {
     background: var(--color-secondary);
-    height: .2rem;
+    border-radius: 10px;
+    height: .25rem;
     transform-origin: center;
     transition: transform .2s ease-in-out, opacity .2s ease-in-out;
     width: 2.2rem;
@@ -47,7 +48,7 @@ body {
 }
 
 .menu-icon.open .bar:last-of-type {
-    margin-top: -.3rem;
+    margin-top: -.45rem;
     transform: rotate(-45deg);
 }
 
@@ -63,6 +64,7 @@ body {
 
 .menu-modal {
     background: var(--color-secondary);
+    color: var(--color-primary);
     height: 100vh;
     position: absolute;
     width: 100vw;
@@ -72,14 +74,33 @@ body {
 .settings {
     display: flex;
     flex-direction: column;
+    align-items: center;
     margin-top: 25%;
     padding: 0 2rem;
 }
 
-.settings-container {
+.setting-container {
+    align-items: center;
     display: flex;
     flex-direction: row;
     margin-bottom: 1rem;
+}
+
+
+.setting-container label {
+    font-size: 1.5rem;
+    margin-right: .8rem;
+}
+
+.setting-container input {
+    color: var(--color-primary);
+}
+
+.setting-container input[type=text] {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    width: 3.25rem;
 }
 
 .split-container {

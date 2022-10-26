@@ -6,7 +6,7 @@ if ('serviceWorker' in navigator) {
 const SETTINGS = (function appSettings() {
     let settings = {
         "bpm": localStorage.getItem('bpm') ?? 120,
-        "dark-mode": localStorage.getItem('dark-mode') ?? "off"
+        "dark-mode": localStorage.getItem('dark-mode') === "true" ? true : false
     }
 
     return {
@@ -158,7 +158,7 @@ const UI = (function userInterface() {
             document.querySelector('.note-diagram').classList.remove("hidden");
         }
 
-        updatePrimaryColor();
+        updateColors();
     }
 
     function generateNoteDiagramHTML() {
@@ -192,10 +192,18 @@ const UI = (function userInterface() {
         }).join('');
     }
 
-    function updatePrimaryColor() {
+    function updateColors() {
+        // Update Primary Color
         document.querySelector('main').style.setProperty(
             '--color-primary',
             colors[getCalcType()]
+        );
+
+        // Update Secondary Color
+        const isDarkMode = SETTINGS.settings['dark-mode'];
+        document.querySelector('main').style.setProperty(
+            '--color-secondary',
+            isDarkMode ? 'var(--color-black)' : 'var(--color-white)'
         );
     }
 
@@ -220,7 +228,17 @@ const UI = (function userInterface() {
     // General Init
     UI.update();
 
-    document.querySelector('.bpm').value = SETTINGS.settings.bpm;
+    // Init Settings Input Values
+    Object.keys(SETTINGS.settings).forEach((k) => {
+        const inputEl = document.querySelector(`[name=${k}]`);
+
+        if(inputEl.getAttribute('type') === 'checkbox') {
+            inputEl.checked = SETTINGS.settings[k];
+        } else {
+            inputEl.value = SETTINGS.settings[k];
+        }
+
+    });
 
     // General Functionality Events
     const inputEl = document.querySelector('.input');
@@ -262,10 +280,18 @@ const UI = (function userInterface() {
 
     settingInputEls.forEach((inputEl) => {
         inputEl.addEventListener('change', (e) => {
+            const inType = e.target.getAttribute('type');
             const setting = e.target.getAttribute('name');
-            const newValue = e.target.value;
+            let newValue = null;
+
+            if(inType === 'checkbox') {
+                newValue = e.target.checked;
+            } else {
+                newValue = e.target.value;
+            }
 
             SETTINGS.setSetting(setting, newValue);
+
             UI.update();
         });
     });
