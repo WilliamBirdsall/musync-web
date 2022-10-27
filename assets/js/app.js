@@ -3,18 +3,55 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register("serviceworker.js");
 }
 
+const SETTINGS = (function appSettings() {
+    let settings = {
+        "bpm": localStorage.getItem('bpm') ?? 120,
+        "dark-mode": localStorage.getItem('dark-mode') === "true" ? true : false
+    }
+
+    return {
+        setSetting,
+        settings
+    }
+
+    function setSetting(setting, newValue) {
+        settings[setting] = newValue;
+        localStorage.setItem(setting, newValue);
+    }
+})();
+
 const CALC = (function calculator() {
     let calcType = "";
 
+    const midiNotes = generateMidiNotes();
+
     const calculations = {
-        "bs": (input) => {
-            return input;
+        "bs": (bars) => {
+            const bpm = SETTINGS.settings.bpm;
+
+            const value = Math.ceil((bars * 4) / (bpm / 60) * 1000);
+
+            return {
+                value: value < 1000 ? value : (value/1000).toFixed(2),
+                label: value < 1000 ? 'ms' : 'sec'
+            };
         },
-        "bh": (input) => {
-            return input;
+        "bh": (bars) => {
+            const bpm = SETTINGS.settings.bpm;
+
+            const value = 1 / (Math.ceil((bars * 4) / (bpm / 60) * 1000) / 1000);
+
+            return {
+                value: value.toFixed(2),
+                label: "hz"
+            };
         },
-        "nh": (input) => {
-            return input;
+        "nh": (midiNote) => {
+            const stdPitch = 440;
+
+            const midiNoteValue = midiNotes[midiNote];
+
+            return stdPitch * Math.pow(2, ((midiNoteValue - 69) / 12));
         }
     };
 
@@ -25,45 +62,237 @@ const CALC = (function calculator() {
     function calc(calcType, input) {
         return calculations[calcType](input);
     }
+
+    function generateMidiNotes() {
+        const notes = [
+            ["A", 0],
+            ["A#", 1],
+            ["B", 2],
+            ["C", 3],
+            ["C#", 4],
+            ["D", 5],
+            ["D#", 6],
+            ["E", 7],
+            ["F", 8],
+            ["F#", 9],
+            ["G", 10],
+            ["G#", 11]
+        ];
+
+        let octaves = [...Array(10).keys()];
+
+        let midiNotes = {};
+
+        octaves.forEach((octave) => {
+            notes.forEach((note) => {
+                const noteName = note[0];
+                const delta = note[1];
+
+                let noteOctave = octave;
+
+                if(noteName === 'C') {
+                    noteOctave += 1;
+                }
+
+                let octaveOffset = null;
+
+                if(["A", "A#", "B"].includes(noteName)) {
+                    octaveOffset =
+                        notes.length * noteOctave;
+                } else {
+                    octaveOffset =
+                        notes.length * (noteOctave == 0 ? 0 : noteOctave - 1);
+                }
+
+                const noteNumber = 21 + delta + octaveOffset;
+
+                midiNotes[noteName + String(noteOctave)] = noteNumber;
+            });
+        });
+
+        return midiNotes;
+    }
 })();
 
 const UI = (function userInterface() {
-    let state = {
-        iValue: getDefaultInitValue(),
-        iLabel: getDefaultInitLabel(),
-        oValue: undefined,
-        oLabel: "ms"
-    };
+    const colors = {
+        "bs": "var(--color-red)",
+        "bh": "var(--color-blue)",
+        "nh": "var(--color-green)"
+    }
+
+    const notes = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"].reverse();
 
     return {
-        getCalcType,
-        state,
         update
     }
 
     function update() {
+        const calcType = getCalcType();
+        const inputValue = getInputValue();
 
+        if(calcType != 'nh') {
+            // Hide note-diagram
+            document.querySelector('.note-diagram').classList.add("hidden");
+
+            const label = inputValue <= 1 ? 'bar' : 'bars';
+            document.querySelector('.input .label').textContent = label;
+
+            const result = CALC.calc(calcType, inputValue);
+
+            setOutputValue(result.value);
+            setOutputLabel(result.label);
+
+            // Show output value and label
+            document.querySelector('.output .value').classList.remove("hidden");
+            document.querySelector('.output .label').classList.remove("hidden");
+        } else {
+            document.querySelector('.input .label').textContent = "octave";
+
+            // Hide output value and label
+            document.querySelector('.output .value').classList.add("hidden");
+            document.querySelector('.output .label').classList.add("hidden");
+
+            generateNoteDiagramHTML();
+
+            document.querySelector('.note-diagram').classList.remove("hidden");
+        }
+
+        updateColors();
+    }
+
+    function generateNoteDiagramHTML() {
+        // Calculate notes
+        const noteObjs = notes.map((note) => {
+            const noteHz = CALC.calc('nh', note + getInputValue())
+            return {
+                name: note + getInputValue(),
+                hz: noteHz.toFixed(1)
+            }
+        });
+
+        // Render notes
+        const noteDiagramEl = document.querySelector('.note-diagram');
+
+        noteDiagramEl.innerHTML = noteObjs.map((note) => {
+            const isSharp = note.name.includes("#");
+            const classes = [
+                "key",
+                isSharp ? "sharp" : ""
+            ].join(" ").trim();
+
+           return `
+                <div class="${classes}">
+                    <span class="key__hz-label">${note.hz}</span>
+                    <div class="key__name-container">
+                        <span class="key__name-label">${note.name}</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateColors() {
+        // Update Primary Color
+        document.querySelector('main').style.setProperty(
+            '--color-primary',
+            colors[getCalcType()]
+        );
+
+        // Update Secondary Color
+        const isDarkMode = SETTINGS.settings['dark-mode'];
+        document.querySelector('main').style.setProperty(
+            '--color-secondary',
+            isDarkMode ? 'var(--color-black)' : 'var(--color-white)'
+        );
     }
 
     function getCalcType() {
-        return document.querySelector('.calc-type.active').dataset.calc ?? "";
+        return document.querySelector('.calc-type.active').dataset.calc;
     }
 
-    function getInitInputValue() {
-        return document.querySelector('.input').value;
+    function getInputValue() {
+        return document.querySelector('.input .value').value;
     }
 
-    function getInitInputLabel() {
-        return document.querySelector('.split-container__top .unit-label').textContent;
+    function setOutputValue(value) {
+        document.querySelector('.output .value').textContent = value;
+    }
+
+    function setOutputLabel(label) {
+        document.querySelector('.output .label').textContent = label;
     }
 })();
 
-(function initEvents() {
+(function init() {
+    // General Init
+    UI.update();
+
+    // Init Settings Input Values
+    Object.keys(SETTINGS.settings).forEach((k) => {
+        const inputEl = document.querySelector(`[name=${k}]`);
+
+        if(inputEl.getAttribute('type') === 'checkbox') {
+            inputEl.checked = SETTINGS.settings[k];
+        } else {
+            inputEl.value = SETTINGS.settings[k];
+        }
+
+    });
+
+    // General Functionality Events
     const inputEl = document.querySelector('.input');
 
     inputEl.addEventListener('change', (e) => {
-        // Get Active Calculation Type
-        // Calculate Output Value
-        // Calculate Output Label
+        UI.update();
+    });
+
+    const calcTypeEls = document.querySelectorAll('.calc-type');
+
+    calcTypeEls.forEach((el) => {
+        el.addEventListener('click', (e) => {
+            calcTypeEls.forEach((el) => {
+                el.classList.remove('active');
+            })
+
+            e.target.classList.add('active');
+
+            UI.update();
+        });
+    });
+
+    // Settings Screen Events
+    const menuIconEl = document.querySelector('.menu-icon');
+    const modalEl = document.querySelector('.menu-modal');
+
+    menuIconEl.addEventListener('click', (e)=> {
+        if(menuIconEl.classList.contains('open')) {
+            menuIconEl.classList.remove('open');
+            modalEl.classList.add('hidden');
+        } else {
+            modalEl.classList.remove('hidden');
+            menuIconEl.classList.add('open');
+        }
+    });
+
+    // Settings Input Events
+    const settingInputEls = document.querySelectorAll('.menu-modal input');
+
+    settingInputEls.forEach((inputEl) => {
+        inputEl.addEventListener('change', (e) => {
+            const inType = e.target.getAttribute('type');
+            const setting = e.target.getAttribute('name');
+            let newValue = null;
+
+            if(inType === 'checkbox') {
+                newValue = e.target.checked;
+            } else {
+                newValue = e.target.value;
+            }
+
+            SETTINGS.setSetting(setting, newValue);
+
+            UI.update();
+        });
     });
 })();

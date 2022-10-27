@@ -11,15 +11,37 @@
 </head>
 <body>
     <main style="--color-primary: var(--color-red); --color-secondary: var(--color-white);">
+        <a href="javascript:;" class="menu-icon">
+            <div class="bars">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+        </a>
+        <div class="menu-modal hidden">
+            <div class="settings">
+                <div class="setting-container">
+                    <label for="bpm">Tempo:</label>
+                    <input type="text" class="bpm" name="bpm">
+                </div>
+                <div class="setting-container">
+                    <label for="dark-mode">Dark Mode:</label>
+                    <input type="checkbox" name="dark-mode">
+                </div>
+            </div>
+        </div>
         <div class="split-container">
             <div class="split-container__top">
-                <input class="input" type="number" name="bars" id="bars" value="4">
-                <span class="unit-label">bar(s)</span>
+                <div class="input">
+                    <input class="value" type="text" name="bars" id="bars" value="4">
+                    <span class="label">bars</span>
+                </div>
             </div>
             <div class="split-containter__bottom">
                 <div class="output">
                     <span class="value">100.5</span>
-                    <span class="unit-label">ms</span>
+                    <span class="label">ms</span>
+                    <div class="note-diagram hidden"></div>
                 </div>
             </div>
             <div class="calc-select">
